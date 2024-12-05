@@ -21,13 +21,11 @@ const loginRegistration = async (req, res, next) => {
                     password: hashPaaword
                 })
                 const userData = await user.save();
-                const data = { email: userData.email, id: userData.id }
-                const token = loginToken(userExist)
-                return res.json({
-                    status: 200,
-                    data: data,
+                const token = loginToken(userData.email)
+                return res.status(200).json({
+                    data:{email:userData.email},
                     token:token,
-                    message: 'User Register Successfully'
+                    message:'User Register Successfully'
                 })
             }
             else {
