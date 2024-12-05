@@ -22,9 +22,11 @@ const loginRegistration = async (req, res, next) => {
                 })
                 const userData = await user.save();
                 const data = { email: userData.email, id: userData.id }
+                const token = loginToken(userExist)
                 return res.json({
                     status: 200,
                     data: data,
+                    token:token,
                     message: 'User Register Successfully'
                 })
             }
@@ -32,7 +34,6 @@ const loginRegistration = async (req, res, next) => {
                 const comparePassword = bcrypt.compare(password, userExist.password)
                 if (comparePassword) {
                     const token = loginToken(userExist)
-                    console.log(token)
                     const userDetails = { email: userExist.email, id: userExist._id }
                     return res.json({
                         status: 200,
