@@ -23,9 +23,9 @@ const loginRegistration = async (req, res, next) => {
                 const userData = await user.save();
                 const token = loginToken(userData.email)
                 return res.status(200).json({
-                    data:{email:userData.email},
-                    token:token,
-                    message:'User Register Successfully'
+                    data: { email: userData.email },
+                    token: token,
+                    message: 'User Register Successfully'
                 })
             }
             else {
@@ -63,13 +63,21 @@ const loginRegistration = async (req, res, next) => {
 const updateUserProfile = async (req, res, next) => {
     try {
         const { name, phone } = req.body
-        await User.updateOne({ email: req.user.email }, { $set: { name: name, phone: phone } });
-        const returnUserDetails = await User.findOne({ email: req.user.email });
-        const data = { email: returnUserDetails.email, name: returnUserDetails.name, phone: returnUserDetails.phone }
-        return res.status(200).json({
-            data: data,
-            message: 'User Profile Updated Successfully'
-        })
+        if (Number(phone.length) === 10 && /^[0-9]+$/.test(phone)) {
+            await User.updateOne({ email: req.user.email }, { $set: { name: name, phone: phone } });
+            const returnUserDetails = await User.findOne({ email: req.user.email });
+            const data = { email: returnUserDetails.email, name: returnUserDetails.name, phone: returnUserDetails.phone }
+            return res.status(200).json({
+                data: data,
+                message: 'User Profile Updated Successfully'
+            })
+        }
+        else {
+            return res.status(500).json({
+                message: 'Number should have 10 digit'
+            })
+        }
+
 
     }
     catch (error) {
